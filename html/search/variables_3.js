@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['powers_5fof_5f2_0',['POWERS_OF_2',['../basic__rest__functions_8sh.html#a57fef89187e80c8ff0c2e3db21772634',1,'basic_rest_functions.sh']]]
+  ['lat_5fletters_0',['LAT_LETTERS',['../basic__rest__functions_8sh.html#a5b41285ba8b2ca9452eb7e7e4e08af5c',1,'basic_rest_functions.sh']]]
 ];

@@ -77,7 +77,7 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 
-<p>A set of functions to talk to the TF Config REST server.  
+<p>A set of functions to talk to an OpenSDN Config REST server.  
 <a href="#details">More...</a></p>
 
 <p><a href="basic__rest__functions_8sh_source.html">Go to the source code of this file.</a></p>
@@ -99,6 +99,9 @@ Functions</h2></td></tr>
 <tr class="memitem:ad0b4eec54a0b6b6ef8d9d854335a7520"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#ad0b4eec54a0b6b6ef8d9d854335a7520">random_string</a> ()</td></tr>
 <tr class="memdesc:ad0b4eec54a0b6b6ef8d9d854335a7520"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a string with the given length of random letters.  <a href="basic__rest__functions_8sh.html#ad0b4eec54a0b6b6ef8d9d854335a7520">More...</a><br /></td></tr>
 <tr class="separator:ad0b4eec54a0b6b6ef8d9d854335a7520"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6b59ebb6f46b07019bf40167a71ecd9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#af6b59ebb6f46b07019bf40167a71ecd9">random_number</a> ()</td></tr>
+<tr class="memdesc:af6b59ebb6f46b07019bf40167a71ecd9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns a random decimal number in the range [min, max].  <a href="basic__rest__functions_8sh.html#af6b59ebb6f46b07019bf40167a71ecd9">More...</a><br /></td></tr>
+<tr class="separator:af6b59ebb6f46b07019bf40167a71ecd9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8780e775c173c2e161f0346b0b57623e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#a8780e775c173c2e161f0346b0b57623e">execute_rest_request</a> ()</td></tr>
 <tr class="memdesc:a8780e775c173c2e161f0346b0b57623e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes REST request.  <a href="basic__rest__functions_8sh.html#a8780e775c173c2e161f0346b0b57623e">More...</a><br /></td></tr>
 <tr class="separator:a8780e775c173c2e161f0346b0b57623e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -114,9 +117,12 @@ Functions</h2></td></tr>
 <tr class="memitem:aa5497220340387202a0742df7b78bc6b"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#aa5497220340387202a0742df7b78bc6b">execute_delete_request</a> ()</td></tr>
 <tr class="memdesc:aa5497220340387202a0742df7b78bc6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Executes DELETE REST request.  <a href="basic__rest__functions_8sh.html#aa5497220340387202a0742df7b78bc6b">More...</a><br /></td></tr>
 <tr class="separator:aa5497220340387202a0742df7b78bc6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa0373715af0257cdfc05aa9d30d6439e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#aa0373715af0257cdfc05aa9d30d6439e">name_to_fqname</a> ()</td></tr>
-<tr class="memdesc:aa0373715af0257cdfc05aa9d30d6439e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns fqname for a given network name.  <a href="basic__rest__functions_8sh.html#aa0373715af0257cdfc05aa9d30d6439e">More...</a><br /></td></tr>
-<tr class="separator:aa0373715af0257cdfc05aa9d30d6439e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab1d16200d8aebffd44fa0fd6007adb22"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#ab1d16200d8aebffd44fa0fd6007adb22">set_project</a> ()</td></tr>
+<tr class="memdesc:ab1d16200d8aebffd44fa0fd6007adb22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets a project name to which other projects will be related during manipulations.  <a href="basic__rest__functions_8sh.html#ab1d16200d8aebffd44fa0fd6007adb22">More...</a><br /></td></tr>
+<tr class="separator:ab1d16200d8aebffd44fa0fd6007adb22"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6193de16fe5ec4f6d6a171d0d9017613"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#a6193de16fe5ec4f6d6a171d0d9017613">name_to_fq_name</a> ()</td></tr>
+<tr class="memdesc:a6193de16fe5ec4f6d6a171d0d9017613"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns fq_name for a given entity name.  <a href="basic__rest__functions_8sh.html#a6193de16fe5ec4f6d6a171d0d9017613">More...</a><br /></td></tr>
+<tr class="separator:a6193de16fe5ec4f6d6a171d0d9017613"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae6c31064c4f78cef3fe061e902ebf00e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#ae6c31064c4f78cef3fe061e902ebf00e">prefix_to_ip</a> ()</td></tr>
 <tr class="memdesc:ae6c31064c4f78cef3fe061e902ebf00e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns IP part of a prefix.  <a href="basic__rest__functions_8sh.html#ae6c31064c4f78cef3fe061e902ebf00e">More...</a><br /></td></tr>
 <tr class="separator:ae6c31064c4f78cef3fe061e902ebf00e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -126,12 +132,12 @@ Functions</h2></td></tr>
 <tr class="memitem:ad63da976482d8e2c28236a9c2e7173a0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#ad63da976482d8e2c28236a9c2e7173a0">is_ipv4_address</a> ()</td></tr>
 <tr class="memdesc:ad63da976482d8e2c28236a9c2e7173a0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Determines whether a given address belongs to IPv4 range.  <a href="basic__rest__functions_8sh.html#ad63da976482d8e2c28236a9c2e7173a0">More...</a><br /></td></tr>
 <tr class="separator:ad63da976482d8e2c28236a9c2e7173a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4a37feabd8beeda187acef9a744296c0"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#a4a37feabd8beeda187acef9a744296c0">fqname_json_to_csv</a> ()</td></tr>
-<tr class="memdesc:a4a37feabd8beeda187acef9a744296c0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns fqname in the CSV format.  <a href="basic__rest__functions_8sh.html#a4a37feabd8beeda187acef9a744296c0">More...</a><br /></td></tr>
-<tr class="separator:a4a37feabd8beeda187acef9a744296c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae9019121b0c620264db3a45ca6fa9708"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#ae9019121b0c620264db3a45ca6fa9708">fqname_to_uuid</a> ()</td></tr>
-<tr class="memdesc:ae9019121b0c620264db3a45ca6fa9708"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the UUID of an object with a given fqname.  <a href="basic__rest__functions_8sh.html#ae9019121b0c620264db3a45ca6fa9708">More...</a><br /></td></tr>
-<tr class="separator:ae9019121b0c620264db3a45ca6fa9708"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a784956c1a4307fa56ad5fd2c8a64dc35"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#a784956c1a4307fa56ad5fd2c8a64dc35">fq_name_json_to_csv</a> ()</td></tr>
+<tr class="memdesc:a784956c1a4307fa56ad5fd2c8a64dc35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns fq_name in the CSV format.  <a href="basic__rest__functions_8sh.html#a784956c1a4307fa56ad5fd2c8a64dc35">More...</a><br /></td></tr>
+<tr class="separator:a784956c1a4307fa56ad5fd2c8a64dc35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a37d3c9552d5a67440f1ec6539e463c79"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#a37d3c9552d5a67440f1ec6539e463c79">fq_name_to_uuid</a> ()</td></tr>
+<tr class="memdesc:a37d3c9552d5a67440f1ec6539e463c79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the UUID of an object with a given fq_name.  <a href="basic__rest__functions_8sh.html#a37d3c9552d5a67440f1ec6539e463c79">More...</a><br /></td></tr>
+<tr class="separator:a37d3c9552d5a67440f1ec6539e463c79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adc5889e33ac796a944a16605088015f2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#adc5889e33ac796a944a16605088015f2">set_config_field</a> ()</td></tr>
 <tr class="memdesc:adc5889e33ac796a944a16605088015f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Takes JSON config and sets the given field in it to the given value.  <a href="basic__rest__functions_8sh.html#adc5889e33ac796a944a16605088015f2">More...</a><br /></td></tr>
 <tr class="separator:adc5889e33ac796a944a16605088015f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -168,9 +174,15 @@ Variables</h2></td></tr>
 <tr class="memitem:adaf61c63e10eb58288850fb3d98237c7"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#adaf61c63e10eb58288850fb3d98237c7">MESG_LOG</a> = log</td></tr>
 <tr class="memdesc:adaf61c63e10eb58288850fb3d98237c7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contains name of log file.  <a href="basic__rest__functions_8sh.html#adaf61c63e10eb58288850fb3d98237c7">More...</a><br /></td></tr>
 <tr class="separator:adaf61c63e10eb58288850fb3d98237c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a90e51bbc9809a2b9ba1bb810ab18e32a"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#a90e51bbc9809a2b9ba1bb810ab18e32a">DOMAIN_NAME</a> = default-domain</td></tr>
+<tr class="memdesc:a90e51bbc9809a2b9ba1bb810ab18e32a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contains the current domain name.  <a href="basic__rest__functions_8sh.html#a90e51bbc9809a2b9ba1bb810ab18e32a">More...</a><br /></td></tr>
+<tr class="separator:a90e51bbc9809a2b9ba1bb810ab18e32a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae63f891bafe613fbad2915407709b537"><td class="memItemLeft" align="right" valign="top">String&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="basic__rest__functions_8sh.html#ae63f891bafe613fbad2915407709b537">PROJECT_NAME</a> = admin</td></tr>
+<tr class="memdesc:ae63f891bafe613fbad2915407709b537"><td class="mdescLeft">&#160;</td><td class="mdescRight">Contains the current project name.  <a href="basic__rest__functions_8sh.html#ae63f891bafe613fbad2915407709b537">More...</a><br /></td></tr>
+<tr class="separator:ae63f891bafe613fbad2915407709b537"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p >A set of functions to talk to the TF Config REST server. </p>
+<div class="textblock"><p >A set of functions to talk to an OpenSDN Config REST server. </p>
 <dl class="section author"><dt>Author</dt><dd>Matvey Kraposhin </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
@@ -192,8 +204,8 @@ Variables</h2></td></tr>
 
 <p>Executes DELETE REST request. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00146">146</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  146</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00161">161</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  161</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -214,8 +226,8 @@ Variables</h2></td></tr>
 
 <p>Executes GET REST request. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00139">139</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  139</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00154">154</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  154</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -236,8 +248,8 @@ Variables</h2></td></tr>
 
 <p>Executes POST REST request (creation of a new object) </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00131">131</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  131</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00146">146</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  146</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -258,8 +270,8 @@ Variables</h2></td></tr>
 
 <p>Executes PUT REST request. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00123">123</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  123</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00138">138</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  138</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -280,19 +292,19 @@ Variables</h2></td></tr>
 
 <p>Executes REST request. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00102">102</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  102</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00117">117</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  117</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="a4a37feabd8beeda187acef9a744296c0" name="a4a37feabd8beeda187acef9a744296c0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4a37feabd8beeda187acef9a744296c0">&#9670;&#160;</a></span>fqname_json_to_csv()</h2>
+<a id="a784956c1a4307fa56ad5fd2c8a64dc35" name="a784956c1a4307fa56ad5fd2c8a64dc35"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a784956c1a4307fa56ad5fd2c8a64dc35">&#9670;&#160;</a></span>fq_name_json_to_csv()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">fqname_json_to_csv </td>
+          <td class="memname">fq_name_json_to_csv </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -300,21 +312,21 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns fqname in the CSV format. </p>
+<p>Returns fq_name in the CSV format. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00195">195</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  195</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00235">235</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  235</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="ae9019121b0c620264db3a45ca6fa9708" name="ae9019121b0c620264db3a45ca6fa9708"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae9019121b0c620264db3a45ca6fa9708">&#9670;&#160;</a></span>fqname_to_uuid()</h2>
+<a id="a37d3c9552d5a67440f1ec6539e463c79" name="a37d3c9552d5a67440f1ec6539e463c79"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a37d3c9552d5a67440f1ec6539e463c79">&#9670;&#160;</a></span>fq_name_to_uuid()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">fqname_to_uuid </td>
+          <td class="memname">fq_name_to_uuid </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -322,10 +334,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns the UUID of an object with a given fqname. </p>
+<p>Returns the UUID of an object with a given fq_name. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00208">208</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  208</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00248">248</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  248</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -346,8 +358,8 @@ Variables</h2></td></tr>
 
 <p>converts an IPv4 address into the number </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00278">278</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  278</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00318">318</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  318</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -368,8 +380,8 @@ Variables</h2></td></tr>
 
 <p>Determines whether a given address belongs to IPv4 range. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00182">182</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  182</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00222">222</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  222</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -390,8 +402,8 @@ Variables</h2></td></tr>
 
 <p>Determines whether a given address belongs to IPv6 range. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00169">169</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  169</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00209">209</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  209</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -412,8 +424,8 @@ Variables</h2></td></tr>
 
 <p>Creates a JSON representation for subnet object. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00266">266</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  266</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00306">306</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  306</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -434,19 +446,19 @@ Variables</h2></td></tr>
 
 <p>Creates random IPv4 address. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00381">381</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  381</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00421">421</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  421</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
-<a id="aa0373715af0257cdfc05aa9d30d6439e" name="aa0373715af0257cdfc05aa9d30d6439e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa0373715af0257cdfc05aa9d30d6439e">&#9670;&#160;</a></span>name_to_fqname()</h2>
+<a id="a6193de16fe5ec4f6d6a171d0d9017613" name="a6193de16fe5ec4f6d6a171d0d9017613"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6193de16fe5ec4f6d6a171d0d9017613">&#9670;&#160;</a></span>name_to_fq_name()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">name_to_fqname </td>
+          <td class="memname">name_to_fq_name </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>
@@ -454,10 +466,10 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Returns fqname for a given network name. </p>
+<p>Returns fq_name for a given entity name. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00153">153</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  153</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00175">175</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  175</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -478,8 +490,8 @@ Variables</h2></td></tr>
 
 <p>Converts a number to IPv4 address. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00306">306</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  306</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00346">346</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  346</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -500,8 +512,8 @@ Variables</h2></td></tr>
 
 <p>Returns IP part of a prefix. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00160">160</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  160</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00200">200</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  200</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -522,8 +534,8 @@ Variables</h2></td></tr>
 
 <p>Returns a random decimal digit. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00053">53</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   53</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00059">59</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   59</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -544,8 +556,8 @@ Variables</h2></td></tr>
 
 <p>Returns a random decimal digit in the range [0,max) </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00064">64</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   64</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00070">70</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   70</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -566,8 +578,8 @@ Variables</h2></td></tr>
 
 <p>Returns a random hex digit. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00045">45</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   45</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00051">51</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   51</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -588,8 +600,30 @@ Variables</h2></td></tr>
 
 <p>Returns a random capital latin letter. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00076">76</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   76</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00082">82</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   82</span>{</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="af6b59ebb6f46b07019bf40167a71ecd9" name="af6b59ebb6f46b07019bf40167a71ecd9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af6b59ebb6f46b07019bf40167a71ecd9">&#9670;&#160;</a></span>random_number()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">random_number </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Returns a random decimal number in the range [min, max]. </p>
+
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00108">108</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  108</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -610,8 +644,8 @@ Variables</h2></td></tr>
 
 <p>Returns a string with the given length of random letters. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00083">83</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">   83</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00089">89</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">   89</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -632,8 +666,30 @@ Variables</h2></td></tr>
 
 <p>Takes JSON config and sets the given field in it to the given value. </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00234">234</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  234</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00274">274</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  274</span>{</div>
+</div><!-- fragment -->
+</div>
+</div>
+<a id="ab1d16200d8aebffd44fa0fd6007adb22" name="ab1d16200d8aebffd44fa0fd6007adb22"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab1d16200d8aebffd44fa0fd6007adb22">&#9670;&#160;</a></span>set_project()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">set_project </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Sets a project name to which other projects will be related during manipulations. </p>
+
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00169">169</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  169</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
@@ -654,12 +710,30 @@ Variables</h2></td></tr>
 
 <p>splits the given network by 24 mask subnets </p>
 
-<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00335">335</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
-<div class="fragment"><div class="line"><span class="lineno">  335</span>{</div>
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00375">375</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+<div class="fragment"><div class="line"><span class="lineno">  375</span>{</div>
 </div><!-- fragment -->
 </div>
 </div>
 <h2 class="groupheader">Variable Documentation</h2>
+<a id="a90e51bbc9809a2b9ba1bb810ab18e32a" name="a90e51bbc9809a2b9ba1bb810ab18e32a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a90e51bbc9809a2b9ba1bb810ab18e32a">&#9670;&#160;</a></span>DOMAIN_NAME</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String DOMAIN_NAME = default-domain</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Contains the current domain name. </p>
+
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00034">34</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+
+</div>
+</div>
 <a id="a9ede953a9867c5217d9b5cc98d902cfc" name="a9ede953a9867c5217d9b5cc98d902cfc"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9ede953a9867c5217d9b5cc98d902cfc">&#9670;&#160;</a></span>HEX_DIGITS</h2>
 
@@ -729,6 +803,24 @@ Variables</h2></td></tr>
 <p>Powers of 2. </p>
 
 <p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00028">28</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
+
+</div>
+</div>
+<a id="ae63f891bafe613fbad2915407709b537" name="ae63f891bafe613fbad2915407709b537"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae63f891bafe613fbad2915407709b537">&#9670;&#160;</a></span>PROJECT_NAME</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">String PROJECT_NAME = admin</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Contains the current project name. </p>
+
+<p class="definition">Definition at line <a class="el" href="basic__rest__functions_8sh_source.html#l00037">37</a> of file <a class="el" href="basic__rest__functions_8sh_source.html">basic_rest_functions.sh</a>.</p>
 
 </div>
 </div>

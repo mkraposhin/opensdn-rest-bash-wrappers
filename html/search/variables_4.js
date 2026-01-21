@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['random_5fmax_0',['RANDOM_MAX',['../basic__rest__functions_8sh.html#a1c66275e4202f5ace626f3616cdeecd2',1,'basic_rest_functions.sh']]]
+  ['mesg_5flog_0',['MESG_LOG',['../basic__rest__functions_8sh.html#adaf61c63e10eb58288850fb3d98237c7',1,'basic_rest_functions.sh']]]
 ];
