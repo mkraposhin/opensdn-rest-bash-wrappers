@@ -11,13 +11,14 @@ fi
 
 #
 # Get OpenStack credentials
-if [ ! -f ./admin-openrc.sh ]
+OPENSTACK_RC_FILE=${OPENSTACK_RC_FILE:-admin-openrc.sh}
+if [ ! -f ./$OPENSTACK_RC_FILE ]
 then
-    echo "Can not find ./admin-openrc.sh"
+    echo "Can not find ./$OPENSTACK_RC_FILE"
     echo "Can not proceed"
     exit 0
 fi
-source ./admin-openrc.sh
+source ./$OPENSTACK_RC_FILE
 
 #
 # Constants and a configuration

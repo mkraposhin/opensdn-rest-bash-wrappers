@@ -1,7 +1,7 @@
 #!/usr/bin/bash
 
 ## @file
-## @brief A set of functions to talk to the TF Config REST server
+## @brief A set of functions to talk to an OpenSDN Config REST server
 ## @author Matvey Kraposhin
 
 if [[ -v BASIC_REST_FUNCTIONS ]]
@@ -30,6 +30,12 @@ declare -a POWERS_OF_2=("1" "2" "4" "8" "16" "32" "64" "128" "256")
 ## @brief Contains name of log file
 declare MESG_LOG=log
 
+## @brief Contains the current domain name
+declare DOMAIN_NAME=default-domain
+
+## @brief Contains the current project name
+declare PROJECT_NAME=admin
+
 if [[ ! -v CONTROLLER_SETTINGS ]]
 then
     echo "Settings for controller (controller_settings.sh) were not found"
@@ -42,7 +48,7 @@ RES_PREFIX="test_result_"
 
 ## @fn random_hex_digit()
 ## @brief Returns a random hex digit
-function random_hex_digit(){
+function random_hex_digit() {
     local digit_pos=`expr \( $RANDOM  \) / 2048`
     echo ${HEX_DIGITS[$digit_pos]}
 }
@@ -50,7 +56,7 @@ function random_hex_digit(){
 
 ## @fn random_dec_digit()
 ## @brief Returns a random decimal digit
-function random_dec_digit(){
+function random_dec_digit() {
     local digit_pos=`expr \( $RANDOM  \) / 2048`
     while [ $digit_pos -gt 9 ]
     do
@@ -61,7 +67,7 @@ function random_dec_digit(){
 
 ## @fn random_dec_digit_max()
 ## @brief Returns a random decimal digit in the range [0,max)
-function random_dec_digit_max(){
+function random_dec_digit_max() {
     local max=$1
     local digit_pos=`expr \( $RANDOM  \) / 2048`
     while [ $digit_pos -ge $max ]
@@ -73,14 +79,14 @@ function random_dec_digit_max(){
 
 ## @fn random_letter()
 ## @brief Returns a random capital latin letter
-function random_letter(){
+function random_letter() {
     local letter_pos=`expr \( $RANDOM  \) / 1260`
     echo ${LAT_LETTERS[$letter_pos]}
 }
 
 ## @fn random_string()
 ## @brief Returns a string with the given length of random letters
-function random_string(){
+function random_string() {
     local string_len=$1
     if [ "$string_len" = "" ]
     then
@@ -97,9 +103,18 @@ function random_string(){
     echo "$str"
 }
 
+## @fn random_number()
+## @brief Returns a random decimal number in the range [min, max]
+function random_number() {
+    local min=$1
+    local max=$2
+    local RANDOM_NUMBER=$(( $RANDOM % ($max - $min + 1) + $min ))
+    echo $RANDOM_NUMBER
+}
+
 ## @fn execute_rest_request()
 ## @brief Executes REST request
-function execute_rest_request(){
+function execute_rest_request() {
     local req_type="$1"
     local req_str="$2"
     local req_url="$3"
@@ -120,7 +135,7 @@ function execute_rest_request(){
 
 ## @fn execute_put_request()
 ## @brief Executes PUT REST request
-function execute_put_request(){
+function execute_put_request() {
     local req_str="$1"
     local req_url="$2"
     execute_rest_request "PUT" "$req_str" "$req_url"
@@ -128,7 +143,7 @@ function execute_put_request(){
 
 ## @fn execute_post_request()
 ## @brief Executes POST REST request (creation of a new object)
-function execute_post_request(){
+function execute_post_request() {
     local req_str="$1"
     local req_url="$2"
     execute_rest_request "POST" "$req_str" "$req_url"
@@ -136,23 +151,48 @@ function execute_post_request(){
 
 ## @fn execute_get_request()
 ## @brief Executes GET REST request
-function execute_get_request(){
+function execute_get_request() {
     local req_url="$1"
     execute_rest_request "GET" "" "$req_url"
 }
 
 ## @fn execute_delete_request()
 ## @brief Executes DELETE REST request
-function execute_delete_request(){
+function execute_delete_request() {
     local req_url=$1
     execute_rest_request "DELETE" "" "$req_url"
 }
 
-## @fn name_to_fqname()
-## @brief Returns fqname for a given network name
-function name_to_fqname(){
-    local fqname="[\"default-domain\", \"admin\", \"$1\"]"
-    echo "$fqname"
+## @fn set_project()
+## @brief Sets a project name to which other projects will be
+## related during manipulations
+function set_project() {
+    PROJECT_NAME="$1"
+}
+
+## @fn name_to_fq_name()
+## @brief Returns fq_name for a given entity name
+function name_to_fq_name() {
+    local name="$1"
+    local colon_pos=`expr index "$name" ":"`
+    local parent_type=
+    if [ $colon_pos -gt 1 ]
+    then
+        parent_type=${name:0:`expr $colon_pos - 1`}
+        name=${name:$colon_pos}
+        if [ "$parent_type" = "config-root" ]
+        then
+            echo "[\"$name\"]"
+        elif [ "$parent_type" = "domain" ]
+        then
+            echo "[\"$DOMAIN_NAME\",\"$name\"]"
+        else
+            echo "[]"
+        fi
+        return 0
+    fi
+    local fq_name="[\"$DOMAIN_NAME\", \"$PROJECT_NAME\", \"$name\"]"
+    echo "$fq_name"
 }
 
 ## @fn prefix_to_ip()
@@ -190,29 +230,29 @@ function is_ipv4_address(){
     return 1
 }
 
-## @fn fqname_json_to_csv()
-## @brief Returns fqname in the CSV format
-function fqname_json_to_csv() {
-    local fqname="$1"
-    local csv_fqname=`echo "$fqname" | sed 's/ //g'` # remove spaces
-    csv_fqname=`echo "$csv_fqname" | sed 's/"//g'` # remove \" characters
-    csv_fqname=`echo "$csv_fqname" | sed 's/,/:/g'` # replace "," w/ ":"
+## @fn fq_name_json_to_csv()
+## @brief Returns fq_name in the CSV format
+function fq_name_json_to_csv() {
+    local fq_name="$1"
+    local csv_fq_name=`echo "$fq_name" | sed 's/ //g'` # remove spaces
+    csv_fq_name=`echo "$csv_fq_name" | sed 's/"//g'` # remove \" characters
+    csv_fq_name=`echo "$csv_fq_name" | sed 's/,/:/g'` # replace "," w/ ":"
 
-    csv_fqname=${csv_fqname::-1} #remove last ]
-    csv_fqname=${csv_fqname:1} #remove first [
-    echo "$csv_fqname"
+    csv_fq_name=${csv_fq_name::-1} #remove last ]
+    csv_fq_name=${csv_fq_name:1} #remove first [
+    echo "$csv_fq_name"
 }
 
-## @fn fqname_to_uuid()
-## @brief Returns the UUID of an object with a given fqname
-function fqname_to_uuid(){
-    local fqname="$1"
+## @fn fq_name_to_uuid()
+## @brief Returns the UUID of an object with a given fq_name
+function fq_name_to_uuid(){
+    local fq_name="$1"
     local type="$2"
     local REQ_STR
 
 read -r -d '' REQ_STR <<- REQ_MARKER
 {
-    "fq_name": $fqname,
+    "fq_name": $fq_name,
     "type": "$type"
 }
 REQ_MARKER
@@ -633,7 +673,7 @@ function make_ip_instance_name(){
             ipi_name="$prefix""_$i"
         fi
         fq_name="[\"$ipi_name\"]"
-        obj_uuid=`fqname_to_uuid "$fq_name" "instance-ip"`
+        obj_uuid=`fq_name_to_uuid "$fq_name" "instance-ip"`
         if [ "$obj_uuid" = "" ]
         then
             stop="yes"
@@ -650,7 +690,13 @@ function add_reference() {
     local from_type="$2"
     local to_uuid="$3"
     local to_type="$4"
+    local sequence="$5"
     local REQ_STR=
+    local default_sequence="{\"major\": 0, \"minor\": 0}"
+    if [ "$sequence" = "" ]
+    then
+        sequence=$default_sequence
+    fi
 
     read -r -d '' REQ_STR <<- REQ_MARKER
 {
@@ -659,7 +705,7 @@ function add_reference() {
     "type": "$from_type",
     "ref-uuid": "$to_uuid",
     "ref-type": "$to_type",
-    "attr": {"sequence": {"major": 0, "minor": 0}}
+    "attr": {"sequence": $sequence}
 }
 REQ_MARKER
 
@@ -676,6 +722,11 @@ function del_reference() {
     local to_uuid="$3"
     local to_type="$4"
     local REQ_STR=
+    local default_sequence="{\"major\": 0, \"minor\": 0}"
+    if [ "$sequence" = "" ]
+    then
+        sequence=$default_sequence
+    fi
 
     read -r -d '' REQ_STR <<- REQ_MARKER
 {
@@ -684,7 +735,7 @@ function del_reference() {
     "type": "$from_type",
     "ref-uuid": "$to_uuid",
     "ref-type": "$to_type",
-    "attr": {"sequence": {"major": 0, "minor": 0}}
+    "attr": {"sequence": $sequence}
 }
 REQ_MARKER
 
@@ -708,16 +759,16 @@ function delete_entity(){
 
 ## @fn network_ipam_subnets()
 ## @brief Extracts UUIDS of IPAM subnets of a given virtual network
-## INPUT: fqname of a virtual network
+## INPUT: fq_name of a virtual network
 function network_ipam_subnets(){
     local nw_name=$1
-    local nw_fqname=`name_to_fqname $nw_name`
-    local nw_uuid=`fqname_to_uuid "$nw_fqname" virtual-network`
+    local nw_fq_name=`name_to_fq_name $nw_name`
+    local nw_uuid=`fq_name_to_uuid "$nw_fq_name" virtual-network`
     local REQ_URL="$REST_ADDRESS/virtual-network/$nw_uuid"
 
     if [ "$nw_uuid" = "" ]
     then
-        echo "network_ipam_subnets: Network $nw_fqname not found" >> $MESG_LOG
+        echo "network_ipam_subnets: Network $nw_fq_name not found" >> $MESG_LOG
         echo ""
         return 1
     fi
@@ -752,19 +803,19 @@ function network_set_ipams() {
     local nw_name="$1"
     local new_ipam_prefixes="$2"
     local ipam_name="$3"
-    local ipam_fqname=`name_to_fqname "$ipam_name"`
-    local ipam_uuid=`fqname_to_uuid "$ipam_fqname" "network-ipam"`
+    local ipam_fq_name=`name_to_fq_name "$ipam_name"`
+    local ipam_uuid=`fq_name_to_uuid "$ipam_fq_name" "network-ipam"`
     if [ "$ipam_uuid" = "" ]
     then
-        echo "switching to default ipam from: $ipam_fqname"
-        ipam_fqname="[\"default-domain\", \"default-project\", \"default-network-ipam\"]"
+        echo "switching to default ipam from: $ipam_fq_name"
+        ipam_fq_name="[\"default-domain\", \"default-project\", \"default-network-ipam\"]"
     fi
     
-    local nw_fqname=`name_to_fqname "$nw_name"`
-    local nw_uuid=`fqname_to_uuid "$nw_fqname" virtual-network`
+    local nw_fq_name=`name_to_fq_name "$nw_name"`
+    local nw_uuid=`fq_name_to_uuid "$nw_fq_name" virtual-network`
     if [ "$nw_uuid" = "" ]
     then
-        echo "network_set_ipams: Cant find $nw_fqname"
+        echo "network_set_ipams: Cant find $nw_fq_name"
         return 1
     fi
 
@@ -784,7 +835,7 @@ function network_set_ipams() {
         {
             "network_ipam_refs":
             [{
-                "to": $ipam_fqname,
+                "to": $ipam_fq_name,
                 "attr" : {"ipam_subnets":[$ipam_subnets]}
             }]
         }
@@ -806,11 +857,11 @@ function floating_ip_set_address() {
     local fip_name=${iip_fip#*","}
     local fip_pos=$(( ${#iip_fip} - ${#fip_name} - 1 ))
     local iip_name="${iip_fip:0:$fip_pos}"
-    local fip_fqname="[\"$iip_name\",\"$fip_name\"]"
-    local fip_uuid=`fqname_to_uuid "$fip_fqname" "floating-ip"`
+    local fip_fq_name="[\"$iip_name\",\"$fip_name\"]"
+    local fip_uuid=`fq_name_to_uuid "$fip_fq_name" "floating-ip"`
     if [ "$fip_uuid" = "" ]
     then
-        echo "floating_ip_set_address: Cant find $fip_fqname"
+        echo "floating_ip_set_address: Cant find $fip_fq_name"
         return 1
     fi
 
@@ -865,13 +916,13 @@ function create_network(){
         fi
     fi
 
-    local vn_fqname=`name_to_fqname $nw_name`
+    local vn_fq_name=`name_to_fq_name $nw_name`
     read -r -d '' REQ_STR <<- REQ_MARKER
     {
         "virtual-network":
         {
             "parent_type": "project",
-            "fq_name": $vn_fqname,
+            "fq_name": $vn_fq_name,
             "network_ipam_refs":
             [{
                 "to": ["default-domain", "default-project", "default-network-ipam"],
@@ -889,7 +940,7 @@ REQ_MARKER
 
 ## @fn create_instance_ip()
 ## @brief Creates an IP Instance
-## Input: name, virtual-network fqname, subnet_uuid, ip address(optionally)
+## Input: name, virtual-network fq_name, subnet_uuid, ip address(optionally)
 function create_instance_ip(){
     local REQ_STR
     local iip_name="$1"
@@ -905,7 +956,7 @@ function create_instance_ip(){
 
     
     local ip_instance_addr=""
-    local nw_fqname=`name_to_fqname "$nw_name"`
+    local nw_fq_name=`name_to_fq_name "$nw_name"`
     if [ "$ip_addr" != "" ]
     then
         ip_instance_addr=", \"instance_ip_address\": \"$ip_addr\""
@@ -916,7 +967,7 @@ function create_instance_ip(){
         "instance-ip": {
             "parent_type": "config-root",
             "fq_name": ["$iip_name"],
-            "virtual_network_refs" : [{"to" : $nw_fqname}],
+            "virtual_network_refs" : [{"to" : $nw_fq_name}],
             "subnet_uuid" : "$subnet_uuid",
             "instance_ip_mode": "active-active"
             $ip_instance_addr
@@ -938,8 +989,8 @@ function create_instance_ip_ifnp() {
     local subnet_uuid="$3"
     local ip_addr="$4"
 
-    local t_ipi_fqname="[\"$ipi_name\"]"
-    local t_ipi_uuid=`fqname_to_uuid "$t_ipi_fqname" "instance-ip"`
+    local t_ipi_fq_name="[\"$ipi_name\"]"
+    local t_ipi_uuid=`fq_name_to_uuid "$t_ipi_fq_name" "instance-ip"`
     if [ "$t_ipi_uuid" = "" ]
     then
         create_instance_ip "$ipi_name" "$nw_name" "$subnet_uuid" "$ip_addr"
@@ -961,10 +1012,10 @@ function create_floating_ip(){
         fip_dir="both"
     fi
 
-    local fip_fqname="[\"$ipi_name\",\"$fip_name\"]"
-    local ipi_fqname="[\"$ipi_name\"]"
+    local fip_fq_name="[\"$ipi_name\",\"$fip_name\"]"
+    local ipi_fq_name="[\"$ipi_name\"]"
 
-    ipi_uuid=`fqname_to_uuid "$ipi_fqname" "instance-ip"`
+    ipi_uuid=`fq_name_to_uuid "$ipi_fq_name" "instance-ip"`
     if [ "$ipi_uuid" = "" ]
     then
         return 1
@@ -975,7 +1026,7 @@ function create_floating_ip(){
         "floating-ip": {
             "parent_type": "instance-ip",
             "parent_uuid" : "$ipi_uuid",
-            "fq_name": $fip_fqname,
+            "fq_name": $fip_fq_name,
             "project_refs": [{"to": ["default-domain","admin"]}],
             "floating_ip_address": "$fip_addr",
             "floating_ip_traffic_direction": "$fip_dir"
@@ -997,13 +1048,13 @@ function create_intf_route_table() {
     local irt_cidr=$2
     # local fip_name=$1
     # local ipi_name=$2
-    local irt_fqname=`name_to_fqname "$irt_name"` # 
+    local irt_fq_name=`name_to_fq_name "$irt_name"` # 
 
 
-    # local fip_fqname="[\"$ipi_name\",\"$fip_name\"]"
-    # local ipi_fqname="[\"$ipi_name\"]"
+    # local fip_fq_name="[\"$ipi_name\",\"$fip_name\"]"
+    # local ipi_fq_name="[\"$ipi_name\"]"
 
-    # ipi_uuid=`fqname_to_uuid "$ipi_fqname" "instance-ip"`
+    # ipi_uuid=`fq_name_to_uuid "$ipi_fq_name" "instance-ip"`
     # if [ "$ipi_uuid" = "" ]
     # then
     #     return 0
@@ -1013,7 +1064,7 @@ function create_intf_route_table() {
     {
         "interface-route-table": {
             "parent_type": "project",
-            "fq_name": $irt_fqname,
+            "fq_name": $irt_fq_name,
             "interface_route_table_routes": { "route": [{"prefix": "$irt_cidr"}] }
         }
     }
@@ -1041,14 +1092,14 @@ function create_vm_interface(){
     then
         aux_args=","$aux_args
     fi
-    local nw_fqname=`name_to_fqname "$nw_name"`
-    local vmi_fqname=`name_to_fqname "$vmi_name"`
+    local nw_fq_name=`name_to_fq_name "$nw_name"`
+    local vmi_fq_name=`name_to_fq_name "$vmi_name"`
 read -r -d '' REQ_STR <<- REQ_MARKER
 {
     "virtual-machine-interface": {
         "parent_type": "project",
-        "fq_name": $vmi_fqname,
-        "virtual_network_refs" : [{"to" : $nw_fqname}]
+        "fq_name": $vmi_fq_name,
+        "virtual_network_refs" : [{"to" : $nw_fq_name}]
         $aux_args
     }
 }
@@ -1065,8 +1116,8 @@ function create_vm_interface_ifnp() {
     local vmi_name="$1"
     local nw_name="$2"
     local aux_args="$3"
-    local t_vmi_fqname=`name_to_fqname "$vmi_name" "virtual-machine-interface"`
-    local t_vmi_uuid=`fqname_to_uuid "$t_vmi_fqname" "virtual-machine-interface"`
+    local t_vmi_fq_name=`name_to_fq_name "$vmi_name" "virtual-machine-interface"`
+    local t_vmi_uuid=`fq_name_to_uuid "$t_vmi_fq_name" "virtual-machine-interface"`
     if [ "$t_vmi_uuid" = "" ]
     then
         create_vm_interface "$vmi_name" "$nw_name" "$aux_args"
@@ -1086,12 +1137,12 @@ function create_bgpaas(){
         return 1;
     fi
     
-    local bgpaas_fqname=`name_to_fqname "$bgpaas_name"`
+    local bgpaas_fq_name=`name_to_fq_name "$bgpaas_name"`
 read -r -d '' REQ_STR <<- REQ_MARKER
 {
     "bgp-as-a-service": {
         "parent_type": "project",
-        "fq_name": $bgpaas_fqname,
+        "fq_name": $bgpaas_fq_name,
         "autonomous_system": "$remote_as",
         "bgpaas_shared": false,
         "bgpaas_session_attributes" : {
@@ -1142,13 +1193,13 @@ function create_logical_router(){
         return 1;
     fi
     
-    local lr_fqname=`name_to_fqname "$lr_name"`
+    local lr_fq_name=`name_to_fq_name "$lr_name"`
 
     read -r -d '' REQ_STR <<- REQ_MARKER
     {
             "logical-router": {
             "parent_type": "project",
-            "fq_name": $lr_fqname,
+            "fq_name": $lr_fq_name,
             "logical-router-gateway-external": false,
             "logical_router_type" : "vxlan-routing"
         }
@@ -1161,8 +1212,8 @@ REQ_MARKER
     execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-# @fn create_virtual_dns()
-# @brief creates a new virtual DNS server.
+## @fn create_virtual_dns()
+## @brief creates a new virtual DNS server.
 function create_virtual_dns() {
     local dns_name="$1"
     local domain_name="$2"
@@ -1172,13 +1223,13 @@ function create_virtual_dns() {
     then
         next_virtual_dns_line=\"next_virtual_DNS\":\"$next_virtual_dns\",
     fi
-    local dns_fqname="[\"default-domain\",\"$dns_name\"]"
+    local dns_fq_name="[\"default-domain\",\"$dns_name\"]"
     local REQ_STR=
     read -r -d '' REQ_STR <<- REQ_MARKER
     {
             "virtual-DNS": {
             "parent_type": "domain",
-            "fq_name": $dns_fqname,
+            "fq_name": $dns_fq_name,
             "virtual_DNS_data": {
                 "domain_name": "$domain_name",
                 $next_virtual_dns_line
@@ -1199,20 +1250,20 @@ REQ_MARKER
     execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-# @fn create_vdns_record()
-# @brief creates a new virtual DNS record.
+## @fn create_vdns_record()
+## @brief creates a new virtual DNS record.
 function create_vdns_record() {
     local record_name="$1"
     local vdns_name="$2"
     local vdns_record="$3"
-    local vdns_fqname="[\"default-domain\",\"$vdns_name\"]"
-    local vdns_uuid=`fqname_to_uuid "$vdns_fqname" "virtual-DNS"`
+    local vdns_fq_name="[\"default-domain\",\"$vdns_name\"]"
+    local vdns_uuid=`fq_name_to_uuid "$vdns_fq_name" "virtual-DNS"`
     if [ "$vdns_uuid" = "" ]
     then
         echo "vDNS $vdns_name was not found" >> $MESG_LOG
         return 1
     fi
-    local record_fqname=[\"default-domain\",\"$vdns_name\",\"$record_name\"]
+    local record_fq_name=[\"default-domain\",\"$vdns_name\",\"$record_name\"]
 
     local REQ_STR=
     read -r -d '' REQ_STR <<- REQ_MARKER
@@ -1220,7 +1271,7 @@ function create_vdns_record() {
             "virtual-DNS-record": {
             "parent_type": "virtual-DNS",
             "parent_uuid": "$vdns_uuid",
-            "fq_name": $record_fqname,
+            "fq_name": $record_fq_name,
             "virtual_DNS_record_data": {
                 $vdns_record
             }
@@ -1235,22 +1286,22 @@ REQ_MARKER
     execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-# @fn create_ipam()
-# @brief Creates a new IPAM with a given DNS server
+## @fn create_ipam()
+## @brief Creates a new IPAM with the given DNS server
 function create_ipam(){
     local ipam_name="$1"
-    local ipam_fqname=`name_to_fqname "$ipam_name"`
+    local ipam_fq_name=`name_to_fq_name "$ipam_name"`
     local vdns_name="$2"
-    local vdns_fqname="[\"default-domain\",\"$vdns_name\"]"
-    local vdns_uuid=`fqname_to_uuid "$vdns_fqname" "virtual-DNS"`    
-    local vdns_csv_fqname=
+    local vdns_fq_name="[\"default-domain\",\"$vdns_name\"]"
+    local vdns_uuid=`fq_name_to_uuid "$vdns_fq_name" "virtual-DNS"`    
+    local vdns_csv_fq_name=
     local vdns_ref_line=
     local vdns_ref2_line=
     if [ "$vdns_uuid" != "" ]
     then
-        vdns_csv_fqname=`fqname_json_to_csv "$vdns_fqname"`
-        vdns_ref_line=\"virtual_dns_server_name\":\"$vdns_csv_fqname\"
-        vdns_ref2_line="{\"to\":$vdns_fqname}"
+        vdns_csv_fq_name=`fq_name_json_to_csv "$vdns_fq_name"`
+        vdns_ref_line=\"virtual_dns_server_name\":\"$vdns_csv_fq_name\"
+        vdns_ref2_line="{\"to\":$vdns_fq_name}"
     fi
 
     local REQ_STR=
@@ -1258,7 +1309,7 @@ function create_ipam(){
     {
             "network-ipam": {
             "parent_type": "project",
-            "fq_name": $ipam_fqname,
+            "fq_name": $ipam_fq_name,
             "network_ipam_mgmt": {
                 "ipam_dns_method": "virtual-dns-server",
                 "ipam_dns_server": {
@@ -1279,16 +1330,186 @@ REQ_MARKER
     execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
+## @fn create_tag_type()
+## @brief Creates a new tag type
+function create_tag_type(){
+    local tag_type="$1"
+    local tag_type_id="$2"
 
+    local tag_type_id_str=""
+    if [ "$tag_type_id" != "" ]
+    then
+        tag_type_id_str=",\"tag_type_id\": \"$tag_type_id\""
+    fi
 
-#
-#
-#
+    local tag_type_fq_name="[\"$tag_type\"]"
+
+    local REQ_STR=
+    read -r -d '' REQ_STR <<- REQ_MARKER
+    {
+        "tag-type": {
+            "fq_name" : $tag_type_fq_name,
+            "display_name" : "$tag_type"
+            $tag_type_id_str
+        }
+    }
+REQ_MARKER
+
+    echo $REQ_STR
+    local REQ_URL="$REST_ADDRESS/tag-types"
+    REQ_STR=`echo $REQ_STR`
+    echo >> $MESG_LOG
+    execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
+}
+
+## @fn create_tag()
+## @brief Creates a new tag
+function create_tag(){
+    local tag_type="$1"
+    local tag_value="$2"
+    local tag_parent="$3"
+    local tag_id="$4"
+    local tag_name="$tag_type=$tag_value"
+
+    local parent_str=""
+    local tag_fq_name=
+    if [ "$tag_parent" = "config-root" ]
+    then
+        parent_str="\"parent_type\" : \"config-root\""
+        tag_fq_name=`name_to_fq_name "config-root:$tag_name"`
+    else
+        parent_str="\"parent_type\" : \"project\""
+        tag_fq_name=`name_to_fq_name "$tag_name"`
+    fi
+
+    local tag_id_str=""
+    if [ "$tag_id" != "" ]
+    then
+        tag_id_str=",\"tag_id\": \"$tag_id\""
+    fi
+
+    local REQ_STR=
+    read -r -d '' REQ_STR <<- REQ_MARKER
+    {
+        "tag": {
+            $parent_str,
+            "fq_name" : $tag_fq_name,
+            "tag_type_name" : "$tag_type",
+            "tag_value": "$tag_value",
+            "name" : "$tag_type=$tag_value"
+            $tag_id_str
+        }
+    }
+REQ_MARKER
+
+    echo $REQ_STR
+    local REQ_URL="$REST_ADDRESS/tags"
+    REQ_STR=`echo $REQ_STR`
+    echo >> $MESG_LOG
+    execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
+}
+
+## @fn create_firewall_rule
+## @brief Creates a new firewall rule
+function create_firewall_rule() {
+    local fwr_name="$1"
+    local fwr_props="$2"
+    local fwr_fq_name="[\"default-domain\",\"admin\",\"$fwr_name\"]"
+
+    local REQ_STR=
+    read -r -d '' REQ_STR <<- REQ_MARKER
+    {
+        "firewall-rule": {
+            "parent_type": "project",
+            "fq_name" : $fwr_fq_name,
+            $fwr_props
+        }
+    }
+REQ_MARKER
+
+    echo $REQ_STR
+    local REQ_URL="$REST_ADDRESS/firewall-rules"
+    REQ_STR=`echo $REQ_STR`
+    echo >> $MESG_LOG
+
+    execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
+}
+
+## @fn create_firewall_policy
+## @brief Creates a firewall policy from the given list of firewall rules
+function create_firewall_policy() {
+    local fwp_name="$1"
+    local fwp_fwr="$2"
+    local fwp_fq_name="[\"default-domain\",\"admin\",\"$fwp_name\"]"
+    local rules_list=
+
+    rules_list=`echo "$fwp_fwr" | sed 's|,| |g'`
+    local fwr_fq_name=
+    local fwr_uuid=
+    local fwr_rule=
+    local fwr_conf_list=
+    for fwr_rule in $rules_list
+    do
+        fwr_fq_name="[\"default-domain\",\"admin\",\"$fwr_rule\"]"
+        echo "fwr_fq_name=$fwr_fq_name"
+        fwr_uuid=`fq_name_to_uuid "$fwr_fq_name" "firewall-rule"`
+        echo "fwr_uuid=$fwr_uuid"
+        fwr_conf_list="{\"to\": $fwr_fq_name, \"uuid\": \"$fwr_uuid\", \"attr\":{\"sequence\":\"0\"}},$fwr_conf_list"
+    done
+    fwr_conf_list=${fwr_conf_list::-1} #remove last ","
+    echo "fwr_conf_list=$fwr_conf_list"
+
+    local REQ_STR=
+    read -r -d '' REQ_STR <<- REQ_MARKER
+    {
+        "firewall-policy": {
+            "parent_type": "project",
+            "fq_name" : $fwp_fq_name,
+            "firewall_rule_refs": [
+            $fwr_conf_list]
+        }
+    }
+REQ_MARKER
+
+    echo $REQ_STR
+    local REQ_URL="$REST_ADDRESS/firewall-policys"
+    REQ_STR=`echo $REQ_STR`
+    echo >> $MESG_LOG
+
+    execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
+}
+
+## @fn create_application_policy_set()
+## @brief Creates a new application policy set
+function create_application_policy_set() {
+    local aps_name="$1"
+    local aps_fq_name="[\"default-domain\",\"admin\",\"$aps_name\"]"
+
+    local REQ_STR=
+    read -r -d '' REQ_STR <<- REQ_MARKER
+    {
+        "application-policy-set": {
+            "parent_type": "project",
+            "fq_name" : $aps_fq_name
+        }
+    }
+REQ_MARKER
+
+    echo $REQ_STR
+    local REQ_URL="$REST_ADDRESS/application-policy-sets"
+    REQ_STR=`echo $REQ_STR`
+    echo >> $MESG_LOG
+
+    execute_post_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
+}
+
+## @fn set_vni_for_logical_route()
+## @brief Sets a VNI for the given logical router
 function set_vni_for_logical_route() {
     local lr_name="$1"
     local vni="$2"
-    local lr_fqname=`name_to_fqname "$lr_name"`
-    local lr_uuid=`fqname_to_uuid "$lr_fqname" "logical-router"`
+    local lr_fq_name=`name_to_fq_name "$lr_name"`
+    local lr_uuid=`fq_name_to_uuid "$lr_fq_name" "logical-router"`
 
     local REQ_STR=
     read -r -d '' REQ_STR <<- REQ_MARKER
@@ -1301,7 +1522,7 @@ REQ_MARKER
     
     if [ "$lr_uuid" = "" ]
     then
-        echo "set_vni_for_logical_route: $lr_fqname not found"
+        echo "set_vni_for_logical_route: $lr_fq_name not found"
         return 1
     fi
     local REQ_URL="$REST_ADDRESS/logical-router/$lr_uuid"
@@ -1311,11 +1532,13 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
+## @fn set_rt_for_logical_router()
+## @brief Sets an RT (route target) for the given logical router
 function set_rt_for_logical_router() {
     local lr_name="$1"
     local rts="$2"
-    local lr_fqname=`name_to_fqname "$lr_name"`
-    local lr_uuid=`fqname_to_uuid "$lr_fqname" "logical-router"`
+    local lr_fq_name=`name_to_fq_name "$lr_name"`
+    local lr_uuid=`fq_name_to_uuid "$lr_fq_name" "logical-router"`
 
     RT_STR=
     for rt in $rts
@@ -1346,29 +1569,97 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
+## @fn set_tag_id()
+## @brief Sets a new ID for a tag
+function set_tag_id() {
+    local tag_type="$1"
+    local tag_value="$2"
+    local tag_parent="$3"
+    local new_tag_id="$4"
+    local tag_name="$tag_type=$tag_value"
+    local tag_fq_name=
+    if [ "$tag_parent" = "config-root" ]
+    then
+        tag_fq_name=`name_to_fq_name "config-root:$tag_name"`
+    else
+        tag_fq_name=`name_to_fq_name "$tag_name"`
+    fi
+
+    local tag_uuid=`fq_name_to_uuid "$tag_fq_name" "tag"`
+    if [ "$tag_parent" = "" ]
+    then
+        echo "Tag $tag_name was not found"
+        return 1
+    fi
+
+    local REQ_STR=
+    read -r -d '' REQ_STR <<- REQ_MARKER
+    {
+        "tag": {
+            "tag_id" : "$new_tag_id"
+        }
+    }
+REQ_MARKER
+
+    local REQ_URL="$REST_ADDRESS/tag/$tag_uuid"
+    REQ_STR=`echo $REQ_STR`
+    echo >> $MESG_LOG
+    execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
+}
+
+## @fn set_tag_type_id()
+## @brief Sets a new type ID for a tag-type
+function set_tag_type_id() {
+    local tag_type="$1"
+    local new_tag_type_id="$2"
+    local tag_type_fq_name="[\"$tag_type\"]"
+    local tag_type_uuid=`fq_name_to_uuid "$tag_type_fq_name" "tag-type"`
+
+    if [ "$tag_type_uuid" = "" ]
+    then
+        echo "Tag $tag_type_name was not found" >> MESG_LOG
+        return 1
+    fi
+
+    local REQ_STR=
+    read -r -d '' REQ_STR <<- REQ_MARKER
+    {
+        "tag-type": {
+            "tag_type_id" : "$new_tag_type_id"
+        }
+    }
+REQ_MARKER
+
+    local REQ_URL="$REST_ADDRESS/tag-type/$tag_type_uuid"
+    REQ_STR=`echo $REQ_STR`
+    echo >> $MESG_LOG
+    echo "$REQ_STR" >> $MESG_LOG
+    execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
+}
 
 #
-# Link iip with vmi
-# Input: ipi fq name, vmi fq name
-function link_iip_with_vmi(){
+
+## @fn link_iip_with_vmi()
+## @brief Links an IIP with a VMI
+function link_iip_with_vmi() {
     local ipi_name="$1"
     local vmi_name="$2"
-    local ipi_fqname="[\"$ipi_name\"]"
-    local vmi_fqname=`name_to_fqname "$vmi_name"`
+    local ipi_fq_name="[\"$ipi_name\"]"
+    local vmi_fq_name=`name_to_fq_name "$vmi_name"`
 
-    local ipi_uuid=`fqname_to_uuid "$ipi_fqname" "instance-ip"`
-    local vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
+    local ipi_uuid=`fq_name_to_uuid "$ipi_fq_name" "instance-ip"`
+    local vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
 
     if [ "$ipi_uuid" = "" ] || [ "$vmi_uuid" = "" ]
     then
-        echo "link_iip_with_vmi: No $ipi_fqname or $vmi_fqname"
+        echo "link_iip_with_vmi: No $ipi_fq_name or $vmi_fq_name"
         return 1
     fi
 
     read -r -d '' REQ_STR <<- REQ_MARKER
     {
         "instance-ip": {
-            "virtual_machine_interface_refs" : [{"to" : $vmi_fqname}]
+            "virtual_machine_interface_refs" : [{"to" : $vmi_fq_name}]
         }
     }
 REQ_MARKER
@@ -1379,33 +1670,35 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
+## @fn link_iip_with_vmis()
+## @brief Links an IIP with a list of VMI
 function link_iip_with_vmis(){
     local ipi_name="$1"
     local vmis="$2"
-    local ipi_fqname="[\"$ipi_name\"]"
-    local ipi_uuid=`fqname_to_uuid "$ipi_fqname" "instance-ip"`
+    local ipi_fq_name="[\"$ipi_name\"]"
+    local ipi_uuid=`fq_name_to_uuid "$ipi_fq_name" "instance-ip"`
 
     if [ "$ipi_uuid" = "" ]
     then
-        echo "link_iip_with_vmis: No $ipi_fqname"
+        echo "link_iip_with_vmis: No $ipi_fq_name"
         return 1
     fi
     
-    local vmi_fqname=
+    local vmi_fq_name=
     local vmi_uuid=
     local vmi_refs=
     echo "ipi_name=$ipi_name"
     echo "vmis=$vmis"
     for vmi in $vmis
     do
-        vmi_fqname=`name_to_fqname $vmi`
-        vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
+        vmi_fq_name=`name_to_fq_name $vmi`
+        vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
         if [ "$vmi_uuid" = "" ]
         then
-            echo "link_iip_with_vmis:No $vmi_fqname"
+            echo "link_iip_with_vmis:No $vmi_fq_name"
             return 1
         fi
-        vmi_refs=$vmi_refs"{\"to\" : $vmi_fqname},"
+        vmi_refs=$vmi_refs"{\"to\" : $vmi_fq_name},"
     done
     vmi_refs=${vmi_refs::-1} #remove last ","
 
@@ -1423,9 +1716,9 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-#
-#
-# Add allowed pair
+
+## @fn link_vmi_with_aap()
+## @brief Adds an allowed pair to a VMI
 function link_vmi_with_aap(){
     local vmi_name=$1
     local new_prefix=$2
@@ -1437,12 +1730,12 @@ function link_vmi_with_aap(){
         address_mode="active-active"
     fi
 
-    local vmi_fqname=`name_to_fqname $vmi_name`
+    local vmi_fq_name=`name_to_fq_name $vmi_name`
 
-    local vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
+    local vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
     if [ "$vmi_uuid" = "" ]
     then
-        echo "link_vmi_with_aap: No $vmi_fqname"
+        echo "link_vmi_with_aap: No $vmi_fq_name"
         return 1
     fi
 
@@ -1478,21 +1771,21 @@ REQ_MARKER
     execute_put_request  "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-#
-#
-# link the fip with the vmi
+
+## @fn link_fip_with_vmi()
+## @brief Link a FIP with a VMI
 function link_fip_with_vmi(){
     local ipi_name=$1
     local fip_name=$2
     local vmi_name=$3
 
-    local fip_fqname="[\"$ipi_name\",\"$fip_name\"]"
-    local fip_uuid=`fqname_to_uuid "$fip_fqname" "floating-ip"`
-    local vmi_fqname=`name_to_fqname $vmi_name`
+    local fip_fq_name="[\"$ipi_name\",\"$fip_name\"]"
+    local fip_uuid=`fq_name_to_uuid "$fip_fq_name" "floating-ip"`
+    local vmi_fq_name=`name_to_fq_name $vmi_name`
 
     if [ "$fip_uuid" = "" ]
     then
-        echo "link_fip_with_vmi: No $fip_fqname"
+        echo "link_fip_with_vmi: No $fip_fq_name"
         return 1
     fi
 
@@ -1500,7 +1793,7 @@ function link_fip_with_vmi(){
     {
         "floating-ip": {
             "virtual_machine_interface_refs" : [
-                {"to": $vmi_fqname}
+                {"to": $vmi_fq_name}
             ]
         }
     }
@@ -1512,36 +1805,36 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-#
-#
-# link fip with bgpaas
+
+## @fn link_fip_with_vmis()
+## @brief Links a FIP with a BGPaaS
 function link_fip_with_vmis(){
     local ipi_name=$1
     local fip_name=$2
     local vmis=$3
 
-    local fip_fqname="[\"$ipi_name\",\"$fip_name\"]"
-    local fip_uuid=`fqname_to_uuid "$fip_fqname" "floating-ip"`
+    local fip_fq_name="[\"$ipi_name\",\"$fip_name\"]"
+    local fip_uuid=`fq_name_to_uuid "$fip_fq_name" "floating-ip"`
 
     if [ "$fip_uuid" = "" ]
     then
-        echo "link_fip_with_vmis: No $fip_fqname"
+        echo "link_fip_with_vmis: No $fip_fq_name"
         return 1
     fi
 
-    local vmi_fqname=
+    local vmi_fq_name=
     local vmi_uuid=
     local vmi_refs=
     for vmi in $vmis
     do
-        vmi_fqname=`name_to_fqname $vmi`
-        vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
+        vmi_fq_name=`name_to_fq_name $vmi`
+        vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
         if [ "$vmi_uuid" = "" ]
         then
-            echo "link_fip_with_vmis: No $vmi_fqname"
+            echo "link_fip_with_vmis: No $vmi_fq_name"
             return 1
         fi
-        vmi_refs=$vmi_refs"{\"to\" : $vmi_fqname},"
+        vmi_refs=$vmi_refs"{\"to\" : $vmi_fq_name},"
     done
     vmi_refs=${vmi_refs::-1} #remove last ","
 
@@ -1561,35 +1854,35 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-#
-#
-# link bgpaas with several vmi
+
+## @fn link_bgpaas_with_vmis()
+## @brief Links a BGPaaS with a list of VMI
 function link_bgpaas_with_vmis(){
     local bgpaas_name=$1
     local vmis="$2"
 
-    local bgpaas_fqname=`name_to_fqname $bgpaas_name`
-    local bgpaas_uuid=`fqname_to_uuid "$bgpaas_fqname" "bgp-as-a-service"`
+    local bgpaas_fq_name=`name_to_fq_name $bgpaas_name`
+    local bgpaas_uuid=`fq_name_to_uuid "$bgpaas_fq_name" "bgp-as-a-service"`
 
     if [ "$bgpaas_uuid" = "" ]
     then
-        echo "link_bgpaas_with_vmis: No $bgpaas_fqname"
+        echo "link_bgpaas_with_vmis: No $bgpaas_fq_name"
         return 1
     fi
 
-    local vmi_fqname=
+    local vmi_fq_name=
     local vmi_uuid=
     local vmi_refs=
     for vmi in $vmis
     do
-        vmi_fqname=`name_to_fqname $vmi`
-        vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
+        vmi_fq_name=`name_to_fq_name $vmi`
+        vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
         if [ "$vmi_uuid" = "" ]
         then
-            echo "link_bgpaas_with_vmis: No $vmi_fqname"
+            echo "link_bgpaas_with_vmis: No $vmi_fq_name"
             return 1
         fi
-        vmi_refs=$vmi_refs"{\"to\" : $vmi_fqname},"
+        vmi_refs=$vmi_refs"{\"to\" : $vmi_fq_name},"
     done
     vmi_refs=${vmi_refs::-1} #remove last ","
 
@@ -1609,32 +1902,34 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
+## @fn link_irt_with_vmi()
+## @brief Links an IRT with a VMI
 function link_irt_with_vmi(){
     local vmi_name="$1"
     local irts="$2"
 
-    local vmi_fqname=`name_to_fqname "$vmi_name"`
-    local vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
+    local vmi_fq_name=`name_to_fq_name "$vmi_name"`
+    local vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
 
     if [ "$vmi_uuid" = "" ]
     then
-        echo "link_irt_with_vmi: No $vmi_fqname"
+        echo "link_irt_with_vmi: No $vmi_fq_name"
         return 1
     fi
 
-    local irt_fqname=
+    local irt_fq_name=
     local irt_uuid=
     local irt_refs=
     for irt in $irts
     do
-        irt_fqname=`name_to_fqname "$irt"`
-        irt_uuid=`fqname_to_uuid "$irt_fqname" "interface-route-table"`
+        irt_fq_name=`name_to_fq_name "$irt"`
+        irt_uuid=`fq_name_to_uuid "$irt_fq_name" "interface-route-table"`
         if [ "$irt_uuid" = "" ]
         then
-            echo "link_irt_with_vmi: No $irt_fqname"
+            echo "link_irt_with_vmi: No $irt_fq_name"
             return 1
         fi
-        irt_refs=$irt_refs"{\"to\" : $irt_fqname},"
+        irt_refs=$irt_refs"{\"to\" : $irt_fq_name},"
     done
     irt_refs=${irt_refs::-1} #remove last ","
 
@@ -1655,34 +1950,34 @@ REQ_MARKER
     execute_put_request "$REQ_STR" "$REQ_URL" >> $MESG_LOG
 }
 
-#
-#
-# link LR with virtual networks
+
+## @fn link_lr_with_vns()
+## @brief Links a LR with virtual networks
 function link_lr_with_vns(){
     local lr_name=$1
     local vns="$2"
-    local lr_fqname=`name_to_fqname "$lr_name"`
+    local lr_fq_name=`name_to_fq_name "$lr_name"`
 
-    local lr_uuid=`fqname_to_uuid "$lr_fqname" "logical-router"`
+    local lr_uuid=`fq_name_to_uuid "$lr_fq_name" "logical-router"`
 
     if [ "$lr_uuid" = "" ]
     then
-        echo "link_lr_with_vns: No $lr_fqname, uuid = $lr_uuid"
+        echo "link_lr_with_vns: No $lr_fq_name, uuid = $lr_uuid"
         return 1
     fi
 
     local net_refs=""
-    local vn_fqname=""
+    local vn_fq_name=""
     local i_vn=0
     for vn in $vns
     do
-        vn_fqname=`name_to_fqname "$vn"`
+        vn_fq_name=`name_to_fq_name "$vn"`
         local t_vmi_name="vmi-lr-""$lr_name"-"$vn"
         local lr_link="\"virtual_machine_interface_device_owner\":\"network:router_interface\""
-        lr_link=$lr_link",\"logical_router_back_refs\":[{\"to\":[$lr_fqname]}]"
+        lr_link=$lr_link",\"logical_router_back_refs\":[{\"to\":[$lr_fq_name]}]"
         create_vm_interface_ifnp "$t_vmi_name" "$vn" "$lr_link"
-        local t_vmi_fqname=`name_to_fqname $t_vmi_name`
-        local t_vmi_uuid=`fqname_to_uuid "$t_vmi_fqname" "virtual-machine-interface"`
+        local t_vmi_fq_name=`name_to_fq_name $t_vmi_name`
+        local t_vmi_uuid=`fq_name_to_uuid "$t_vmi_fq_name" "virtual-machine-interface"`
         local t_ipi_name="ipi-lr-""$lr_name"-"$vn"
 
         nw_ipams=`network_ipam_subnets "$vn"`
@@ -1697,28 +1992,30 @@ function link_lr_with_vns(){
 
         link_iip_with_vmi "$t_ipi_name" "$t_vmi_name"
         add_reference "$lr_uuid" "logical-router" "$t_vmi_uuid" "virtual-machine-interface"
-        #add_reference "$lr_uuid" "logical-router" "$vn_fqname" "virtual-network"
+        #add_reference "$lr_uuid" "logical-router" "$vn_fq_name" "virtual-network"
 
-        #local vmi_ref="\"to\" : $t_vmi_fqname, \"attr\" : null, \"uuid\" : \"$t_vmi_uuid\""
+        #local vmi_ref="\"to\" : $t_vmi_fq_name, \"attr\" : null, \"uuid\" : \"$t_vmi_uuid\""
         #echo $vmi_ref
-        #local vn_ref="\"virtual_network_refs\" : [{\"to\" : $vn_fqname }]"
+        #local vn_ref="\"virtual_network_refs\" : [{\"to\" : $vn_fq_name }]"
         #echo "$vmi_ref"
         #echo "$vn_ref"
 
-        #net_refs=$net_refs"{\"to\" : $t_vmi_fqname, "attr":"null","virtual_network_refs" : [{\"to\" : $vn_fqname }]},"
-        #net_refs=$net_refs"{"virtual_network_refs" : [{\"to\" : $vn_fqname }]},"
+        #net_refs=$net_refs"{\"to\" : $t_vmi_fq_name, "attr":"null","virtual_network_refs" : [{\"to\" : $vn_fq_name }]},"
+        #net_refs=$net_refs"{"virtual_network_refs" : [{\"to\" : $vn_fq_name }]},"
         #net_refs=$net_refs"{$vn_ref},"
         #net_refs=$net_refs"{$vmi_ref},"
     done
 }
 
+## @fn get_lr_vn_name()
+## @brief Returns the name of the given LR
 function get_lr_vn_name() {
     local lr_name="$1"
-    local lr_fqname=`name_to_fqname "$lr_name"`
-    local lr_uuid=`fqname_to_uuid "$lr_fqname" "logical-router"`
+    local lr_fq_name=`name_to_fq_name "$lr_name"`
+    local lr_uuid=`fq_name_to_uuid "$lr_fq_name" "logical-router"`
     if [ "$lr_uuid" = "" ]
     then
-        echo "get_lr_vn_name: Cant find logical router $lr_fqname"
+        echo "get_lr_vn_name: Cant find logical router $lr_fq_name"
         return 1
     fi
     local lr_vn_name="__contrail_lr_internal_vn_$lr_uuid""__"
@@ -1726,6 +2023,8 @@ function get_lr_vn_name() {
     return 0
 }
 
+## @fn get_lr_vrf_name()
+## @brief Returns the name of the given LR routing VRF table
 function get_lr_vrf_name() {
     local lr_name="$1"
     local lr_vn_name=`get_lr_vn_name "$lr_name"`
@@ -1740,12 +2039,14 @@ function get_lr_vrf_name() {
     return 1
 }
 
+## @fn get_ll_services()
+## @brief Returns the list of available link-local (LL) services
 function get_ll_services() {
-    local gvr_fqname="$1"
-    local gvr_uuid=`fqname_to_uuid "$gvr_fqname" "global-vrouter-config"`
+    local gvr_fq_name="$1"
+    local gvr_uuid=`fq_name_to_uuid "$gvr_fq_name" "global-vrouter-config"`
     if [ "$gvr_uuid" = "" ]
     then
-        echo "UUID for $gvr_fqname was not found"
+        echo "UUID for $gvr_fq_name was not found"
         return 1
     fi
 
@@ -1766,21 +2067,23 @@ function get_ll_services() {
     #local IPAMS_DICT=`jq -c -r '.[0].attr.ipam_subnets' <<< "$IPAM_REFS_DICT"`
 }
 
+#
+#
 function add_ll_service() {
-    local gvr_fqname="$1"
+    local gvr_fq_name="$1"
     local ll_service_config="$2"
     local new_ll_service="$3"
-    local ll_config=`get_ll_services "$gvr_fqname"`
+    local ll_config=`get_ll_services "$gvr_fq_name"`
     if [ "$ll_config" = "" ]
     then
         echo "Cant retrieve link local services"
         return 1
     fi
     #
-    local gvr_uuid=`fqname_to_uuid "$gvr_fqname" "global-vrouter-config"`
+    local gvr_uuid=`fq_name_to_uuid "$gvr_fq_name" "global-vrouter-config"`
     if [ "$gvr_uuid" = "" ]
     then
-        echo "UUID for $gvr_fqname was not found"
+        echo "UUID for $gvr_fq_name was not found"
         return 1
     fi
     #
@@ -1838,19 +2141,19 @@ function get_ll_service_config() {
 }
 
 function del_ll_service() {
-    local gvr_fqname="$1"
+    local gvr_fq_name="$1"
     local ll_service_name="$2"
-    local ll_services_config=`get_ll_services "$gvr_fqname"`
+    local ll_services_config=`get_ll_services "$gvr_fq_name"`
     if [ "$ll_services_config" = "" ]
     then
         echo "Cant retrieve link local services"
         return 1
     fi
     #
-    local gvr_uuid=`fqname_to_uuid "$gvr_fqname" "global-vrouter-config"`
+    local gvr_uuid=`fq_name_to_uuid "$gvr_fq_name" "global-vrouter-config"`
     if [ "$gvr_uuid" = "" ]
     then
-        echo "UUID for $gvr_fqname was not found"
+        echo "UUID for $gvr_fq_name was not found"
         return 1
     fi
     local n_services=`jq -c -r '. | length' <<< "$ll_services_config"`
@@ -1896,7 +2199,7 @@ function delete_floating_ips() {
     local iip_name=
     local fip_name=
     local fip_pos=
-    local fip_fqname=
+    local fip_fq_name=
     local fip_uuid=
     for iip_fip in $iip_fips
     do
@@ -1905,8 +2208,8 @@ function delete_floating_ips() {
         fip_pos=$(( ${#iip_fip} - ${#fip_name} - 1 ))
         iip_name="${iip_fip:0:$fip_pos}"
 
-        fip_fqname="[\"$iip_name\", \"$fip_name\"]"
-        fip_uuid=`fqname_to_uuid "$fip_fqname" "floating-ip"`
+        fip_fq_name="[\"$iip_name\", \"$fip_name\"]"
+        fip_uuid=`fq_name_to_uuid "$fip_fq_name" "floating-ip"`
         if [ "$fip_uuid" != "" ]
         then
             delete_entity "$fip_uuid" "floating-ip"
@@ -1918,9 +2221,9 @@ function delete_instance_ips(){
     local ipis=$1
     for ipi in $ipis
     do
-        local ipi_fqname="[\"$ipi\"]"
-        echo "Deleting $ipi_fqname" >> $MESG_LOG
-        local ipi_uuid=`fqname_to_uuid "$ipi_fqname" "instance-ip"`
+        local ipi_fq_name="[\"$ipi\"]"
+        echo "Deleting $ipi_fq_name" >> $MESG_LOG
+        local ipi_uuid=`fq_name_to_uuid "$ipi_fq_name" "instance-ip"`
         if [ "$ipi_uuid" != "" ]
         then
             delete_entity "$ipi_uuid" "instance-ip"
@@ -1932,9 +2235,9 @@ function delete_vm_interfaces(){
     local vmis=$1
     for vmi in $vmis
     do
-        local vmi_fqname=`name_to_fqname $vmi`
-        echo "Deleting $vmi_fqname" >> $MESG_LOG
-        local vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
+        local vmi_fq_name=`name_to_fq_name $vmi`
+        echo "Deleting $vmi_fq_name" >> $MESG_LOG
+        local vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
         if [ "$vmi_uuid" != "" ]
         then
             delete_entity "$vmi_uuid" "virtual-machine-interface"
@@ -1942,13 +2245,15 @@ function delete_vm_interfaces(){
     done
 }
 
+## @fn delete_bgpaases
+## @brief Deletes all instances of BGPaaS given as a parameter
 function delete_bgpaases(){
     local bgps=$1
     for bgpaas in $bgps
     do
-        local bgpaas_fqname=`name_to_fqname $bgpaas`
-        echo "Deleting $bgpaas_fqname" >> $MESG_LOG
-        local bgpaas_uuid=`fqname_to_uuid "$bgpaas_fqname" "bgp-as-a-service"`
+        local bgpaas_fq_name=`name_to_fq_name $bgpaas`
+        echo "Deleting $bgpaas_fq_name" >> $MESG_LOG
+        local bgpaas_uuid=`fq_name_to_uuid "$bgpaas_fq_name" "bgp-as-a-service"`
         if [ "$bgpaas_uuid" != "" ]
         then
             delete_entity "$bgpaas_uuid" "bgp-as-a-service"
@@ -1956,19 +2261,21 @@ function delete_bgpaases(){
     done
 }
 
+# @fn delete_networks
+# @brief Deletes all networks, given as a parameter
 function delete_networks(){
     local networks="$1"
     for nw in $networks
     do
         echo "Deleting nw $nw" >> $MESG_LOG
-        nw_fqname=`name_to_fqname $nw`
-        nw_uuid=`fqname_to_uuid "$nw_fqname" "virtual-network"`
+        nw_fq_name=`name_to_fq_name $nw`
+        nw_uuid=`fq_name_to_uuid "$nw_fq_name" "virtual-network"`
         delete_entity "$nw_uuid" "virtual-network"
     done
 }
 
-# @fn prefix_delete_vm_interfaces
-# @brief This deletes all vmi's with a given prefix
+## @fn prefix_delete_vm_interfaces
+## @brief This deletes all vmi's with a given prefix
 function prefix_delete_vm_interfaces(){
     local vm_prefix=$1
     if [ "$vm_prefix" = "" ]
@@ -1987,8 +2294,8 @@ function prefix_delete_vm_interfaces(){
     delete_vm_interfaces "$vmis_stripped"
 }
 
-# @fn prefix_delete_ip_instances
-# @brief This deletes all IP instances with a given prefix
+## @fn prefix_delete_ip_instances
+## @brief This deletes all IP instances with a given prefix
 function prefix_delete_ip_instances(){
     local ipi_prefix=$1
     if [ "$ipi_prefix" = "" ]
@@ -2007,20 +2314,22 @@ function prefix_delete_ip_instances(){
     delete_instance_ips "$ipis_stripped"
 }
 
+## @fn delete_logical_router
+## @brief Deletes a logical router given by its name and networks list
 function delete_logical_router() {
     local lr_name="$1"
     local nw_names="$2"
-    local lr_fqname=`name_to_fqname $lr_name`
-    local lr_uuid=`fqname_to_uuid "$lr_fqname" "logical-router"`
+    local lr_fq_name=`name_to_fq_name $lr_name`
+    local lr_uuid=`fq_name_to_uuid "$lr_fq_name" "logical-router"`
 
     for nw_name in $nw_names
     do
         local vmi_lrname="vmi-lr-""$lr_name"-"$nw_name"
         local ipi_lrname="ipi-lr-""$lr_name"-"$nw_name"
-        local vmi_fqname=`name_to_fqname $vmi_lrname`
-        local ipi_fqname=`name_to_fqname $ipi_lrname`
-        local vmi_uuid=`fqname_to_uuid "$vmi_fqname" "virtual-machine-interface"`
-        local ipi_uuid=`fqname_to_uuid "$ipi_fqname" "instance-ip"`
+        local vmi_fq_name=`name_to_fq_name $vmi_lrname`
+        local ipi_fq_name=`name_to_fq_name $ipi_lrname`
+        local vmi_uuid=`fq_name_to_uuid "$vmi_fq_name" "virtual-machine-interface"`
+        local ipi_uuid=`fq_name_to_uuid "$ipi_fq_name" "instance-ip"`
 
         if [ "$ipi_uuid" != "" ] && [ "$vmi_uuid" != "" ]
         then
@@ -2038,20 +2347,24 @@ function delete_logical_router() {
     delete_entity "$lr_uuid" "logical-router"
 }
 
+## @fn delete_intf_route_table
+## @brief Deletes an IRT (Interface Route Table) instance with the given name
 function delete_intf_route_table() {
     local irt_name="$1"
-    local irt_fqname=`name_to_fqname "$irt_name"`
-    local irt_uuid=`fqname_to_uuid "$irt_fqname" "interface-route-table"`
+    local irt_fq_name=`name_to_fq_name "$irt_name"`
+    local irt_uuid=`fq_name_to_uuid "$irt_fq_name" "interface-route-table"`
     if [ "$irt_uuid" != "" ]
     then
         delete_entity "$irt_uuid" "interface-route-table"
     fi
 }
 
+## @fn delete_virtual_dns
+## @brief Deletes a vDNS instance with the given name
 function delete_virtual_dns() {
     local vdns_name="$1"
-    local vdns_fqname="[\"default-domain\",\"$vdns_name\"]"
-    local vdns_uuid=`fqname_to_uuid "$vdns_fqname" "virtual-DNS"`
+    local vdns_fq_name="[\"default-domain\",\"$vdns_name\"]"
+    local vdns_uuid=`fq_name_to_uuid "$vdns_fq_name" "virtual-DNS"`
 
     if [ "$vdns_uuid" != "" ]
     then
@@ -2059,28 +2372,105 @@ function delete_virtual_dns() {
     fi
 }
 
-# @fn delete_vdns_record
-# @brief deletes the specified virtual-DNS-record associated with the
-# specified virtual-DNS
+## @fn delete_vdns_record
+## @brief deletes the specified virtual-DNS-record associated with the
+## specified virtual-DNS
 function delete_vdns_record() {
     local record_name="$1"
     local vdns_name="$2"
-    local record_fqname=[\"default-domain\",\"$vdns_name\",\"$record_name\"]
-    local record_uuid=`fqname_to_uuid "$record_fqname" "virtual-DNS-record"`
+    local record_fq_name=[\"default-domain\",\"$vdns_name\",\"$record_name\"]
+    local record_uuid=`fq_name_to_uuid "$record_fq_name" "virtual-DNS-record"`
     if [ "$record_uuid" != "" ]
     then
         delete_entity "$record_uuid" "virtual-DNS-record"
     fi
 }
 
+## @fn delete_ipam
+## @brief Deletes an IPAM with the given name
 function delete_ipam() {
     local ipam_name="$1"
-    local ipam_fqname=`name_to_fqname "$ipam_name"`
-    local ipam_uuid=`fqname_to_uuid "$ipam_fqname" "network-ipam"`
+    local ipam_fq_name=`name_to_fq_name "$ipam_name"`
+    local ipam_uuid=`fq_name_to_uuid "$ipam_fq_name" "network-ipam"`
 
     if [ "$ipam_uuid" != "" ]
     then
         delete_entity "$ipam_uuid" "network-ipam"
+    fi
+}
+
+## @fn delete_tag_type
+## @brief Deletes a tag type with the given name
+function delete_tag_type() {
+    local tag_type="$1"
+    local tag__type_fq_name="[\"$tag_type\"]"
+    local tag_type_uuid=`fq_name_to_uuid "$tag__type_fq_name" "tag-type"`
+
+    if [ "$tag_type_uuid" != "" ]
+    then
+        delete_entity "$tag_type_uuid" "tag-type"
+    fi
+}
+
+## @fn delete_tag
+## @brief Deletes a tag with the given type and value
+function delete_tag() {
+    local tag_type="$1"
+    local tag_value="$2"
+    local tag_parent="$3"
+
+    local tag_fq_name=
+    if [ "$tag_parent" = "config-root" ]
+    then
+        tag_fq_name=`name_to_fq_name "config-root:$tag_type=$tag_value"`
+    else
+        tag_fq_name=`name_to_fq_name $tag_type=$tag_value`
+    fi
+
+    local tag_uuid=`fq_name_to_uuid "$tag_fq_name" "tag"`
+
+    if [ "$tag_uuid" != "" ]
+    then
+        delete_entity "$tag_uuid" "tag"
+    fi
+}
+
+## @fn delete_firewall_rule
+## @bried Deletes the given firewall rule
+function delete_firewall_rule() {
+    local fwr_name="$1"
+    local fwr_fq_name=`name_to_fq_name "$fwr_name"`
+    local fwr_uuid=`fq_name_to_uuid "$fwr_fq_name" "firewall-rule"`
+
+    if [ "$fwr_uuid" != "" ]
+    then
+        delete_entity "$fwr_uuid" "firewall-rule"
+    fi
+}
+
+## @fn delete_firewall_policy
+## @bried Deletes the given firewall policy
+function delete_firewall_policy() {
+    local fwp_name="$1"
+    local fwp_fq_name=`name_to_fq_name "$fwp_name"`
+    local fwp_uuid=`fq_name_to_uuid "$fwp_fq_name" "firewall-policy"`
+
+    if [ "$fwp_uuid" != "" ]
+    then
+        delete_entity "$fwp_uuid" "firewall-policy"
+    fi
+}
+
+## @fn delete_application_policy_set
+## @bried Deletes the given application policy set
+function delete_application_policy_set() {
+    local aps_name="$1"
+    local aps_fq_name=`name_to_fq_name "$aps_name"`
+    local aps_uuid=`fq_name_to_uuid "$aps_fq_name" "application-policy-set"`
+
+    if [ "$aps_uuid" != "" ]
+    then
+        delete_entity "$aps_uuid" "application-policy-set"
     fi
 }
 
